@@ -59,6 +59,7 @@ class CtlModelMetaclass(type):
         attrs['__db_connection'] = None
         attrs['__db_cursor__'] = None
         attrs['__setup__'] = False
+        attrs['__sql_record__'] = []
         return type.__new__(cls, name, bases, attrs)
 
 
@@ -158,6 +159,10 @@ class Model(dict, metaclass=CtlModelMetaclass):
 
     @classmethod
     def query(cls, query_string):
+        """
+        Very Important to know, it has sql injection risk with this code.
+        For the maximum flexibility, this query code won't be modified to remove the sql injection risk.
+        """
         raw_sql = "select * from {table_name} where {query}".format(table_name=cls.__table__, query=query_string)
         with connect_hold(get_database_connection(cls.__table__+".db", "sqlite")) as c:
             c.execute(raw_sql)
@@ -166,7 +171,8 @@ class Model(dict, metaclass=CtlModelMetaclass):
     @classmethod
     def raw_sql(cls, sql_string):
         """
-        execute the raw sql statement in sql_string
+        execute the raw sql statement in sql_string.
+        Very Important to know, it has sql injection risk with this code.
         """
         with connect_hold(get_database_connection(cls.__table__+".db", "sqlite")) as c:
             c.execute(sql_string)
