@@ -12,7 +12,9 @@
 - [ ] Migrate database between sqlite and mysql
 
 #### Change history
+
 > * Add database type convert factory mode for sql insert, create
+
 ```python
     def _create_adapter(self, statement, table_type):
         """ Factory to create raw sql create table statement base on the database type"""
@@ -25,7 +27,6 @@
             raise NotImplementedError("Other database still not be supported")
         return raw_create_sql
 
-    ......
     def __init__(self):
         """
         Need to implement the Base class __init__ function.
@@ -35,7 +36,9 @@
         self._create_adapter = partial(self._create_adapter, table_type=self.__table_type__)
         self._insert_adapter = partial(self._insert_adapter, table_type=self.__table_type__)
 ```
+
 > * Add context manager help function for connection of database 
+
 ```python
 @contextmanager
 def connect_hold(database_conn):
@@ -57,7 +60,6 @@ def get_database_connection(database_name, database_type):
         raise NotImplementedError("Only sqlite database is supported for now")
     return sqlite3.connect(database_name)
 
-    ......
 
     @classmethod
     def raw_sql(cls, sql_string):
